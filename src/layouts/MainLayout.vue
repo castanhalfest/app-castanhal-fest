@@ -195,7 +195,7 @@ export default {
     }
   },
   mounted () {
-    if (JSON.parse(localStorage.getItem('abaete-manage'))) {
+    if (JSON.parse(localStorage.getItem('castanhal-manage'))) {
       this.isAdmin = true
     }
     if (!navigator.canShare) {
@@ -227,9 +227,9 @@ export default {
   },
   methods: {
     logout (rota = '/') {
-      localStorage.removeItem('abaete-fest-token')
-      localStorage.removeItem('abaete-manage')
-      localStorage.removeItem('abaete-email')
+      localStorage.removeItem('castanhal-fest-token')
+      localStorage.removeItem('castanhal-manage')
+      localStorage.removeItem('castanhal-email')
       this.$router.push(rota)
     },
     goTo (routeName) {

@@ -1,13 +1,13 @@
 import { Notify } from 'quasar'
 function userExist () {
-  return !!localStorage.getItem('abaete-fest-token')
+  return !!localStorage.getItem('castanhal-fest-token')
 }
 
 export default ({ router, store, Vue }) => {
   router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
     const adminRoute = to.matched.some(record => record.meta.admin)
-    const isAdmin = JSON.parse(localStorage.getItem('abaete-manage'))
+    const isAdmin = JSON.parse(localStorage.getItem('castanhal-manage'))
     if (requiresAuth && !userExist()) {
       Notify.create({
         color: 'negative',
