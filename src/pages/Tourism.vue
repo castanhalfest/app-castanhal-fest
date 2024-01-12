@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-grey-1">
+  <q-page :class="$q.dark.isActive ? 'bg-dark' : 'bg-grey-1'">
     <div class="">
       <div class="col-12 text-center">
         <!-- <q-banner inline-actions class="text-primary bg-secondary">
@@ -19,7 +19,14 @@
       :pagination="initialPagination"
     >
       <template v-slot:top-right>
-        <q-input outlined rounded dense debounce="300" v-model="filter" placeholder="Pesquisar">
+        <q-input
+          v-model="filter"
+          placeholder="Pesquisar"
+          debounce="300"
+          outlined
+          rounded
+          dense
+        >
           <template v-slot:append>
             <q-icon name="mdi-magnify" />
           </template>
@@ -113,9 +120,10 @@ export default {
         console.log(error)
       }
     },
-    openDialogCourse (course) {
+    openDialogCourse (place) {
       this.modalTourism = true
-      this.tourismDetails = course
+      this.tourismDetails = place
+      this.$mixpanel.track(place.name)
     },
     detailsEvent (course) {
       this.$router.push({ name: 'eventDetails', params: { id: course.id } })

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-grey-1">
+  <q-page :class="$q.dark.isActive ? '': 'bg-grey-1'">
     <!-- <div class="">
       <div class="col-12 text-center"> -->
         <!-- <q-banner inline-actions class="text-primary bg-secondary"> -->
@@ -20,9 +20,9 @@
         :options="options"
         label="Selecione uma categoria"
         class="col-sm-12 col-xs-12 col-md-6"
-        bg-color="white"
-        label-color="primary"
-        color="primary"
+        :bg-color="$q.dark.isActive ? '' : 'white'"
+        :label-color="$q.dark.isActive ? 'white' : 'primary'"
+        :color="$q.dark.isActive ? 'white' : 'primary'"
         map-options
         emit-value
         @input="listEvents(categoria)"
@@ -72,19 +72,30 @@
         <div class="q-pa-sm col-xs-12 col-sm-6 col-md-3">
           <q-card
             class="fit cursor-pointer shadow-5"
+            @click="detailsEvent(props.row)"
           >
             <q-img
               :src="props.row.image_url"
-              :ratio="4/3"
-              @click="openDialogCourse(props.row)"
+              class="full-width q-pa-sm q"
+              style="position: absolute;filter: blur(1rem); opacity: 0.9"
+              :ratio="3/3.9"
+              placeholder-src="loadPlaceholder.png"
             >
-              <template #loading>
-                <q-skeleton class="full-width full-height" square />
-              </template>
-            </q-img>
+          </q-img>
+            <div class="q-pa-lg">
+              <q-img
+                :src="props.row.image_url"
+                :ratio="3/4"
+                style="border-radius: 8px"
+              >
+                <template #loading>
+                  <q-skeleton class="full-width full-height" square />
+                </template>
+              </q-img>
+            </div>
 
             <q-card-section>
-              <div class="text-h6">
+              <div class="text-h6" >
                 {{ props.row.name }}
               </div>
               <q-item-label class="row justify-between">
@@ -169,7 +180,8 @@ export default {
         },
         { name: 'categoria', label: 'Categoria', field: 'categoria', sortable: true },
         { name: 'resumo', label: 'Resumo', field: 'resumo', sortable: true },
-        { name: 'avaliacao', label: 'Avaliação', field: 'avaliacao' }
+        { name: 'avaliacao', label: 'Avaliação', field: 'avaliacao' },
+        { name: 'start_date', label: 'Data', field: 'start_date', align: 'left', format: (data) => this.formatDateString(data) }
       ],
       events: [],
       load: true,
@@ -206,9 +218,10 @@ export default {
         console.log(error)
       }
     },
-    openDialogCourse (course) {
+    openDialogCourse (event) {
       this.modalCourse = true
-      this.courseDetails = course
+      this.courseDetails = event
+      this.$mixpanel.track(event.name)
     },
     detailsEvent (course) {
       this.$router.push({ name: 'eventDetails', params: { id: course.id } })

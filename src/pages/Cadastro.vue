@@ -151,9 +151,9 @@ export default {
             birth_date: formattedString
           }
         })
-        await localStorage.setItem('castanhal-fest-token', response.data.token)
-        localStorage.setItem('castanhal-manage', response.data.is_admin)
-        localStorage.setItem('castanhal-email', this.form.email)
+        await localStorage.setItem('abaete-fest-token', response.data.token)
+        localStorage.setItem('abaete-manage', response.data.is_admin)
+        localStorage.setItem('abaete-email', this.form.email)
         this.$notifySuccess('Cadastro realizado com Sucesso!')
         this.$router.push({ name: 'home' })
       } catch (error) {

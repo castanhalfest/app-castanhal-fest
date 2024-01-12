@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header elevated :class="$q.dark.isActive ? 'bg-dark' : 'bg-primary'">
       <q-toolbar>
         <q-btn
           class="gt-sm"
@@ -16,8 +16,17 @@
           <q-avatar size="sm">
             <img src="architecture-and-city.png" />
           </q-avatar>
-          CastanhalFest
+          AbaetéFest
         </q-toolbar-title>
+
+        <q-toggle
+          v-model="darkMode"
+          checked-icon="mdi-moon-waning-crescent"
+          :color="$q.dark.isActive ? 'grey-7' : 'white'"
+          unchecked-icon="mdi-white-balance-sunny"
+          size="lg"
+          @input="setDarkMode"
+        />
 
         <q-btn
           v-if="canShare"
@@ -28,7 +37,7 @@
           @click="shareApp"
         />
 
-        <!-- <div>Quasar v{{ $q.version }}</div> -->
+        <!-- <div>Quasar v{{ version_app }}</div> -->
         <!-- <q-btn-dropdown color="white" size="lg" label="" flat rounded>
           <q-list>
             <q-item clickable @click="goTo('userInformations')">
@@ -52,15 +61,24 @@
       </q-toolbar>
     </q-header>
 
-    <q-footer v-if="!!$route.meta.tab" class="lt-md bg-white" :class="$q.platform.is.ios ? 'q-pb-md' : ''" >
+    <q-footer
+      v-if="!!$route.meta.tab" class="lt-md"
+      :class="[
+        $q.platform.is.ios ? 'q-pb-md' : '',
+        $q.dark.isActive ? 'bg-dark' : 'bg-white'
+      ]"
+      >
       <q-tabs
         align="justify"
         dense
         no-caps
         indicator-color="white"
-        class="bg-white text-weight-thin text-grey-7"
-        :class="$q.platform.is.ios ? 'q-pb-md' : ''"
-        active-color="primary"
+        mobile-arrows
+        :class="[
+          $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-weight-thin text-grey-7',
+          $q.platform.is.ios ? 'q-pb-md' : ''
+        ]"
+        :active-color="$q.dark.isActive ? 'blue-2' : 'primary'"
       >
         <q-route-tab
           v-for="(tab, index) in essentialLinks"
@@ -79,7 +97,7 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
-      content-class="bg-grey-1"
+      :content-class="$q.dark.isActive ? '' : 'bg-grey-1'"
     >
       <q-list>
         <q-item-label
@@ -134,6 +152,11 @@ const menusRoute = [
     title: 'Viagens',
     icon: 'mdi-bus-clock',
     route: 'trips'
+  },
+  {
+    title: 'Serviços',
+    icon: 'mdi-hammer-screwdriver',
+    route: 'services'
   },
   // {
   //   title: 'Mapa',
@@ -191,11 +214,13 @@ export default {
       adminLinks: adminRoute,
       isAdmin: false,
       version: process.env.VERSION,
-      canShare: false
+      canShare: false,
+      version_app: process.env.VERSION_APP,
+      darkMode: false
     }
   },
   mounted () {
-    if (JSON.parse(localStorage.getItem('castanhal-manage'))) {
+    if (JSON.parse(localStorage.getItem('abaete-manage'))) {
       this.isAdmin = true
     }
     if (!navigator.canShare) {
@@ -203,33 +228,21 @@ export default {
     } else {
       this.canShare = true
     }
-    // const versionStorage = JSON.parse(localStorage.getItem('abaete-version'))
-    // if (!versionStorage) {
-    //   this.$q.dialog({
-    //     title: 'ATUALIZAÇÃO IMPORTANTE',
-    //     html: true,
-    //     message: `
-    //       Tivemos um problema em nosso servidor e precisamos limpar nosso banco de dados.
-    //       Por favor realize novamente seu cadastro para utilizar o aplicativo!<br>
-    //       Se o problema persistir envie um email para <b>eng.patrickmonteiro@gmail.com</b> para solucionarmos.
-    //     `
-    //   }).onOk(() => {
-    //     console.log('ATUALIZANDO VERSÃO ATUAL')
-    //     localStorage.setItem('abaete-version', JSON.stringify(this.version))
-    //     this.logout('/cadastro')
-    //   })
-    // }
-    // else if (!versionStorage) {
-    //   console.log('SALVANDO VERSAO INEXISTENTE')
-    //   localStorage.setItem('abaete-version', JSON.stringify(this.version))
-    //   // this.logout()
-    // }
+    // Solução para recarregar Safari quando não encontrar arquivos JS
+    window.addEventListener('error', (e) => {
+      const srcError = e.target.src
+      if (srcError.includes('/js/')) {
+        window.location.reload()
+      }
+    }, true)
+
+    this.verifyDarkMode()
   },
   methods: {
     logout (rota = '/') {
-      localStorage.removeItem('castanhal-fest-token')
-      localStorage.removeItem('castanhal-manage')
-      localStorage.removeItem('castanhal-email')
+      localStorage.removeItem('abaete-fest-token')
+      localStorage.removeItem('abaete-manage')
+      localStorage.removeItem('abaete-email')
       this.$router.push(rota)
     },
     goTo (routeName) {
@@ -257,6 +270,21 @@ export default {
         await navigator.share(shareData)
       } catch (err) {
         this.$notifyDanger('Não foi possível compartilharo app!')
+      }
+    },
+    setDarkMode (darkValue) {
+      this.$mixpanel.track('darkMode', { darkModeValue: darkValue })
+      this.$q.dark.set(darkValue)
+      this.$q.localStorage.set('dark-mode-abaetefest', darkValue)
+    },
+    verifyDarkMode () {
+      const darkModeLocalStorage = this.$q.localStorage.getItem('dark-mode-abaetefest')
+      if (darkModeLocalStorage) {
+        this.setDarkMode(true)
+        this.darkMode = true
+      } else {
+        this.setDarkMode(false)
+        this.darkMode = false
       }
     }
   }

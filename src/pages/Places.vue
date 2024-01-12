@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class="bg-grey-1">
+  <q-page padding :class="$q.dark.isActive ? '': 'bg-grey-1'">
     <div class="row q-pb-md justify-center">
       <q-btn-group push>
         <q-btn
@@ -7,9 +7,15 @@
           label="Lista"
           icon="mdi-format-list-bulleted-square"
           :to="{ name: 'places' }"
-          color="primary"
+          :class="$q.dark.isActive ? 'text-black' : 'text-white'"
+          :color="$q.dark.isActive ? 'white' : 'primary'"
         />
-        <q-btn push label="Mapa" icon="mdi-map-legend" :to="{ name: 'map' }" />
+        <q-btn
+          push
+          label="Mapa"
+          icon="mdi-map-legend"
+          :to="{ name: 'map' }"
+        />
       </q-btn-group>
     </div>
     <div class="row q-pb-md">
@@ -19,9 +25,9 @@
         :options="options"
         label="Selecione uma categoria"
         class="col-sm-12 col-xs-12 col-md-6"
-        bg-color="white"
-        label-color="primary"
-        color="primary"
+        :bg-color="$q.dark.isActive ? '' : 'white'"
+        :label-color="$q.dark.isActive ? 'white' : 'primary'"
+        :color="$q.dark.isActive ? 'white' : 'primary'"
         map-options
         emit-value
       >
@@ -54,10 +60,13 @@
         <q-card @click="openDialogCourse(place)" class="q-ma-xs">
           <q-item>
             <q-item-section>
-              <q-item-label class="text-weight-medium">{{
+              <q-item-label
+                class="text-bold text-primary"
+                :class="$q.dark.isActive ? 'text-blue-2' : 'text-primary'"
+              >{{
                 place.title
               }}</q-item-label>
-              <q-item-label caption>{{ place.address }}</q-item-label>
+              <q-item-label class="caption">{{ place.address }}</q-item-label>
               <q-item-label caption v-if="place.preco">
                 Preço:
                 <q-rating
@@ -67,6 +76,10 @@
                   color="green-5"
                   readonly
                 />
+              </q-item-label>
+              <q-item-label class="text-caption text-weight-medium" v-if="place.phone">
+                Telefone:
+                {{ place.phone }}
               </q-item-label>
             </q-item-section>
 
@@ -100,8 +113,13 @@ export default {
     return {
       places: makers,
       ratingModel: 3,
-      categoria: 'Bancos',
+      categoria: 'Açaí',
       options: [
+        {
+          label: 'Açaí',
+          value: 'Açaí',
+          icon: 'flat/acai.png'
+        },
         {
           label: 'Bancos',
           value: 'Bancos',
@@ -141,6 +159,11 @@ export default {
           label: 'Artigos de Pesca Esportiva',
           value: 'Pesca',
           icon: 'flat/fishing.png'
+        },
+        {
+          label: 'Suplementos e Saúde',
+          value: 'Suplemento&Saude',
+          icon: 'categories/whey.png'
         }
       ],
       modalPlaces: false,
@@ -160,9 +183,10 @@ export default {
     console.log(this.categoria)
   },
   methods: {
-    openDialogCourse (course) {
+    openDialogCourse (place) {
       this.modalPlaces = true
-      this.placeDetails = course
+      this.placeDetails = place
+      this.$mixpanel.track(place.title)
     },
     closeModal () {
       this.modalPlaces = false

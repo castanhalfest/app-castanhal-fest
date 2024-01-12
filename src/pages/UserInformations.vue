@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     getEmail () {
-      const email = localStorage.getItem('castanhal-email')
+      const email = localStorage.getItem('abaete-email')
       if (email) {
         this.email = email
       }

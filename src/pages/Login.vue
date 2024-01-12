@@ -160,9 +160,9 @@ export default {
         const response = await this.$services.users().login({
           ...this.form
         })
-        await localStorage.setItem('castanhal-fest-token', response.data.token)
-        localStorage.setItem('castanhal-manage', response.data.is_admin)
-        localStorage.setItem('castanhal-email', response.data.email)
+        await localStorage.setItem('abaete-fest-token', response.data.token)
+        localStorage.setItem('abaete-manage', response.data.is_admin)
+        localStorage.setItem('abaete-email', response.data.email)
         this.$notifySuccess('Logado com sucesso!')
         this.$router.push({ name: 'home' })
       } catch (error) {

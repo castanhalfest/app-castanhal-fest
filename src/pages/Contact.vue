@@ -20,6 +20,7 @@
           href="https://api.whatsapp.com/send?phone=5591982828945&text=Ol%C3%A1%2C%20gostaria%20de%20saber%20como%20publicar%20meu%20evento%20no%20app%20Abaet%C3%A9Fest"
           target="_blank"
           type="a"
+          @click="handleWhatsapp"
         />
         <q-btn
           rounded
@@ -31,21 +32,42 @@
           href="https://www.instagram.com/abaetefest/"
           target="_blank"
           type="a"
+          @click="handleInstagram"
         />
       </div>
-      <div class="col-sm-12 col-xs-12 col-md-6 q-pt-md text-center">
-         <q-img
-            src="contact.svg"
-            :width="$q.screen.gt.sm ? '300px' : '200px'"
+      <div class="col-sm-12 col-xs-12 col-md-6 q-pt-lg text-center">
+        <p class="text-h6">Desenvolvido pela startup </p>
+        <a href="https://abaetetech.com.br/" target="_blank">
+          <q-avatar size="100px">
+            <img
+                rounded
+                src="abaetetech.png"
+              />
+          </q-avatar>
+        </a>
+        <div>
+          <q-btn
+            href="https://abaetetech.com.br/"
+            target="_blank"
+            label="abaetetech.com.br"
+            flat
+            color="primary"
+            no-caps
+            size="lg"
           />
+        </div>
+        <!-- <p
+          class="text-subtitle1 q-pt-md"
+          :class="$q.dark.isActive ? 'text-white link-custom' : 'text-grey-9'">
+          <a href="https://abaetetech.com.br/" target="_blank">
+            abaetetech.com.br
+          </a>
+        </p> -->
       </div>
     </div>
     <div class="row justify-center">
       <div class="col-sm-12 col-xs-12 col-md-5 q-py-md">
-         <!-- <p><span class="text-bold">Mantido por:</span> Patrick Monteiro</p>
-         <p><span class="text-bold">Email:</span> eng.patrickmonteiro@gmail.com</p> -->
-
-         <q-list>
+         <!-- <q-list>
           <q-item>
             <q-item-section top avatar>
               <q-avatar>
@@ -82,7 +104,7 @@
               <q-item-label caption>Arquiteto e Desenvolvedor Back-end.</q-item-label>
             </q-item-section>
           </q-item>
-         </q-list>
+         </q-list> -->
       </div>
     </div>
   </q-page>
@@ -90,6 +112,20 @@
 
 <script>
 export default {
-  name: 'PageContact'
+  name: 'PageContact',
+  methods: {
+    handleInstagram () {
+      this.$mixpanel.track('contact-instagram')
+    },
+    handleWhatsapp () {
+      this.$mixpanel.track('contact-whatsapp')
+    }
+  }
 }
 </script>
+
+<style>
+ .link-custom a {
+  color: rgb(180, 196, 242);
+};
+</style>

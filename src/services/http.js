@@ -1,28 +1,31 @@
-import Axios from 'axios'
+import Axios from "axios";
 // import { axiosDecorator } from 'amazonia-framework-frontend'
 
-export const urlBase = process.env.URI_API // 'https://medico.sige.dev.br/webservices/app'
+export const urlBase = process.env.URI_API; // 'https://medico.sige.dev.br/webservices/app'
 const axios = Axios.create({
-  baseURL: urlBase
-})
+  baseURL: urlBase,
+});
 
 axios.defaults.headers = {
   // 'Content-Type': 'application/json'
   // 'Cache-Control': 'no-cache',
   // Pragma: 'no-cache',
   // Expires: '0'
-}
+};
 
-axios.interceptors.request.use(function (config) {
-  const token = window.localStorage.getItem('castanhal-fest-token')
-  if (token) {
-    config.headers.Authorization = 'Bearer ' + token
-    return config
+axios.interceptors.request.use(
+  function (config) {
+    const token = window.localStorage.getItem("abaete-fest-token");
+    if (token) {
+      config.headers.Authorization = "Bearer " + token;
+      return config;
+    }
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
   }
-  return config
-}, function (error) {
-  return Promise.reject(error)
-})
+);
 
 // axios.interceptors.response.use(response => {
 //   return Promise.resolve(response)
@@ -38,7 +41,7 @@ axios.interceptors.request.use(function (config) {
 //   return Promise.reject(error)
 // })
 
-export const http = axios
+export const http = axios;
 
 // axiosDecorator.oauth2(http)
 // axiosDecorator.notification(http)
